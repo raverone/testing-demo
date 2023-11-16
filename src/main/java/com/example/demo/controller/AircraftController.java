@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.AircraftDto;
-import com.example.demo.model.Aircraft;
-import com.example.demo.repository.AircraftRepository;
+import com.example.demo.dto.CreateAircraftRequest;
+import com.example.demo.service.AircraftService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,20 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AircraftController {
 
-  private final AircraftRepository aircraftRepository;
+  private final AircraftService aircraftService;
 
   @GetMapping
-  public List<AircraftDto> greeting() {
-    return aircraftRepository.findAll().stream().map(AircraftController::mapToProductDto).toList();
+  public List<AircraftDto> getAllAircrafts() {
+    return aircraftService.getAllAircrafts().stream().map(AircraftDto::new).toList();
   }
 
   @PostMapping
-  public AircraftDto create(@RequestBody AircraftDto aircraftDto) {
-    Aircraft aircraft = aircraftRepository.save(new Aircraft(aircraftDto.name()));
-    return mapToProductDto(aircraft);
-  }
-
-  private static AircraftDto mapToProductDto(Aircraft model) {
-    return new AircraftDto(model.getId(), model.getName());
+  public AircraftDto create(@RequestBody CreateAircraftRequest request) {
+    return new AircraftDto(aircraftService.createAircraft(request));
   }
 }
